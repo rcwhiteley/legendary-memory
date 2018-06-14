@@ -19,7 +19,7 @@ exports.getStandings = function (tournyId, callback) {
 
 exports.getMatches = function (tournyId, callback) {
     connection.query(
-        "SELECT partidos.equipoLocal_nombre, partidos.equipoVisita_nombre, partidos.fecha, partidos.marcadorLocal, \
+        "SELECT partidos.id, partidos.equipoLocal_nombre, partidos.equipoVisita_nombre, partidos.fecha, partidos.marcadorLocal, \
             partidos.marcadorVisita \
             FROM partidos INNER JOIN torneos \
             ON torneos.id=partidos.torneos_id \
@@ -39,6 +39,10 @@ exports.getTeams = function(callback){
     connection.query('SELECT * FROM equipos;', callback);
 };
 
+exports.getGameData = function(callback){
+    connection.query
+}
+
 exports.getGoalScorers = function(tournyId, callback){
     connection.query(
         "select jugadores_matricula, nombre, carrera, equipos_nombre,\
@@ -49,4 +53,8 @@ exports.getGoalScorers = function(tournyId, callback){
 exports.addTeam = function (nombre, facultad, callback) {
     connection.query('INSERT INTO equipos values(?,?);',[nombre, facultad], callback);
 
+};
+
+exports.getTeamPlayersInTourny = function(tournyId, equipo, callback) {
+    connection.query('select * from jugadores_torneo_view where torneos_id=? and equipos_nombre=?;', [tournyId, equipo], callback);
 };

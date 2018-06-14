@@ -51,4 +51,13 @@ router.get('/:tourny/goalscorers', function(req, res){
     });
 });
 
+router.get('/:tourny/teams/:name', function (req, res) {
+    db.getTeamPlayersInTourny(req.params.tourny, req.params.name, function(err, result){
+        if(err){
+            console.log(err);
+        }
+        res.send(result);
+    });
+});
+
 module.exports = router;
