@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark">
+        <a href="#" class="navbar-brand">Tabla de Posiciones</a>
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 mt-4 text-center">
+                <table class="table table-striped">
+                    <tr>
+                        <th>Nombre</th>
+                        <th>PTS</th>
+                        <th>PJ</th>
+                        <th>PG</th>
+                        <th>PE</th>
+                        <th>PP</th>
+                        <th>GF</th>
+                        <th>GC</th>
+                        <th>DIF</th>
+                    </tr>
+                    <% for(var i = 0; i < tabla.length; i++) { %>
+                    <tr>
+                        <td><%= tabla[i].equipos_nombre %></td>
+                        <td><%= tabla[i].puntos %></td>
+                        <td><%= tabla[i].PJ %></td>
+                        <td><%= tabla[i].PG %></td>
+                        <td><%= tabla[i].PE %></td>
+                        <td><%= tabla[i].PP %></td>
+                        <td><%= tabla[i].GF %></td>
+                        <td><%= tabla[i].GC %></td>
+                        <td><%= tabla[i].DG %></td>
+                    </tr>
+                    <% } %>
+                </table>
+            </div>
+
+            <!-- <div class="col-md-6 mt-4 card">
+                <form action="/agregarEquipo" method="post" class="card-body">
+                    <h3 class="card-title">Agregar Equipo</h3>
+                    <div class="form-group">
+                        <input id="equipo" type="text" name="title" class="form-control"
+                        placeholder="Equipo">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="equipos" class="form-control"
+                        placeholder="Facultad">
+                    </div>
+                    <input type="submit" class="btn btn-primary">
+                </form>
+            </div> -->
+        </div>
+    </div>
+    <script>
+        document.getElementById('equipo').focus();
+    </script>
+</body>
+</html>
