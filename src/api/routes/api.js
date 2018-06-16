@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../../database/mysqldal');
+const fs = require('fs');
 
 router.use(function timeLog(req, res, next) {
     /* por si se agrega algun middleware*/
@@ -22,9 +23,9 @@ router.get('/tournies', function(req, res){
     });
 });
 
-router.get('/:tourny/matches', function(req, res){
+router.get('/:tourny/games', function(req, res){
 
-    db.getMatches(req.params.tourny, function(err, result){
+    db.getGames(req.params.tourny, function(err, result){
         if(err){
             console.log(err);
         }
@@ -57,6 +58,29 @@ router.get('/:tourny/teams/:name', function (req, res) {
             console.log(err);
         }
         res.send(result);
+    });
+});
+
+router.get('/gameinfo/:game', function(req, res){
+   db.getGameInfo(req.params.game, function (err, result){
+       if(err){
+           console.log(err);
+       }
+       res.send(result);
+    });
+});
+
+router.get('/logo/:team', function(req, res){
+    let logo = './src/public/' + req.params.team + ".png";
+    let def = './src/public/nologo.png';
+
+    if(!fs.existsSync(logo))
+        logo = def;
+    fs.readFile(logo, 'base64', function (err, contents) {
+        if (err) {
+            console.log(err);
+        }
+        res.send({image: contents});
     });
 });
 
