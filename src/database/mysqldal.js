@@ -56,11 +56,11 @@ exports.getTeamPlayersInTourny = function (tournyId, equipo, callback) {
 };
 
 exports.getGameInfo = function (partido, callback) {
-    connection.query("select * from(\
-select partidos_id, nombre, matricula, equipos_nombre, torneos_id, minuto, 'gol' as evento\
-from goles_view as T1\
+    connection.query("select * from( \
+select partidos_id, nombre, matricula, equipos_nombre, torneos_id, minuto, 'gol' as evento \
+from goles_view as T1 \
 union select \
-partidos_id, jugadores_nombre, matricula, equipos_nombre, torneos_id, minuto, IF(tarjetas_id = 1, 'amarilla', 'roja') as evento\
-from sanciones_view as T2) as T3\
-where partidos_id = ? order by minuto;", [partido], callback);
+partidos_id, jugadores_nombre, matricula, equipos_nombre, torneos_id, minuto, IF(tarjetas_id = 1, 'amarilla', 'roja') as evento \
+from sanciones_view as T2) as T3 \
+where partidos_id=? order by minuto;", [partido], callback);
 };
