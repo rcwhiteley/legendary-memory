@@ -66,6 +66,7 @@ router.get('/gameinfo/:game', function(req, res){
        if(err){
            console.log(err);
        }
+       
        res.send(result);
     });
 });
@@ -80,6 +81,7 @@ router.get('/logo/:team', function(req, res){
         if (err) {
             console.log(err);
         }
+        res.setHeader("Cache-Control","max-age=600000");
         res.send({image: contents});
     });
 });
