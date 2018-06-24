@@ -10,7 +10,7 @@ module.exports = app => {
         console.log("aca");
         db.getTeams((err, result) => {
             console.log(result);
-            res.render('dinamico/posiciones', {
+            res.render('dinamico/agregarequipo', {
                 equipos: result
             });
         });
@@ -26,7 +26,16 @@ module.exports = app => {
     });
     app.post('/agregarequipo', (req, res) =>{
         db.addTeam(req.body.title, req.body.equipos, (err, result) => {
-            res.redirect('/agregarEquipo');
+            res.redirect('/agregarequipo');
         });
+    });
+
+    app.get('/partidos', (req, res)=>{
+       db.getGames(1, (err, result)=>{
+           console.log(result);
+           res.render('dinamico/partidos', {
+               partidos: result
+          });
+       });
     });
 };

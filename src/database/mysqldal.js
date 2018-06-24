@@ -19,7 +19,7 @@ exports.getStandings = function (tournyId, callback) {
 
 exports.getGames = function (tournyId, callback) {
     connection.query(
-        "SELECT * FROM partidos_view where torneos_id=?", [tournyId], callback);
+        "SELECT * FROM partidos_view where torneos_id=? order by fecha asc", [tournyId], callback);
 };
 
 exports.getTeamsInTourny = function (tournyId, callback) {
