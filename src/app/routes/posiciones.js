@@ -38,7 +38,6 @@ module.exports = app => {
     });*/
 
     app.get('/agregarequipo',(req, res) => {
-        console.log("aca");
         db.getTeams((err, result) => {
             console.log(result);
             res.render('dinamico/agregarequipo', {
@@ -49,7 +48,7 @@ module.exports = app => {
 
     app.get('/tablaposiciones', (req,res) =>{
         db.getStandings(1, (err, result) => {
-            console.log(result);
+            //console.log(result);
             res.render('dinamico/tabladeposiciones', {
                 tabla: result
             });
@@ -64,7 +63,7 @@ module.exports = app => {
     app.get('/partidos', (req, res)=>{
        db.getGames(1, (err, result)=>{
            db.getTeamsInTourny(1, (err1, result1)=>{
-               console.log(result1);
+               //console.log(result1);
                 res.render('dinamico/partidos', {
                     partidos: result,
                     equipos : result1
@@ -75,7 +74,7 @@ module.exports = app => {
     app.post('/agregarpartido', (req, res)=>{
         console.log(req.body);
         validarPartido(req.body, (valid) => {
-            console.log(valid);
+            //console.log(valid);
             if(valid === true){
                 db.agregarPartido(1, req.body, result=>{
                     if(result === "ok") {

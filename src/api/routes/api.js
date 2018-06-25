@@ -11,82 +11,81 @@ router.use(function timeLog(req, res, next) {
     next();
 });
 
-router.get('/:tourny/standings', function(req, res) {
+router.get('/tournaments/:tourny/standings', function(req, res) {
     db.getStandings(req.params.tourny, function(err, result){
         if(err){
             log.error(req.originalUrl, "fallo al obtener posiciones, error:", err)
-            res.send("{}");
+            res.sendStatus(500);
         }
         else
-            res.send(result);
+            res.status(200).send(result);
     });
 });
 
-router.get('/tournies', function(req, res){
+router.get('/tournaments', function(req, res){
     db.getTournies(function(err, result){
         if(err){
             log.error(req.originalUrl, "fallo al obtener torneos, error:", err)
-            res.send("{}");
+            res.sendStatus(500);
         }
         else
-            res.send(result);
+            res.status(200).send(result);
     });
 });
 
-router.get('/:tourny/games', function(req, res){
-
+router.get('/tournaments/:tourny/fixtures', function(req, res){
     db.getGames(req.params.tourny, function(err, result){
         if(err){
             log.error(req.originalUrl, "fallo al obtener partidos, error:", err)
-            res.send("{}");
+            res.sendStatus(500);
         }
         else
-            res.send(result);
+            res.status(200).send(result);
     });
 });
 
-router.get('/:tourny/teams', function(req, res){
+router.get('/tournaments/:tourny/teams', function(req, res){
 
     db.getTeams(req.params.tourny, function(err, result){
         if(err){
             log.error(req.originalUrl, "fallo al obtener equipos, error:", err)
-            res.send("{}");
+            res.sendStatus(500);
         }
         else
-            res.send(result);
+            res.status(200).send(result);
     });
 });
 
-router.get('/:tourny/goalscorers', function(req, res){
+router.get('/tournaments/:tourny/goalscorers', function(req, res){
     db.getGoalScorers(req.params.tourny, function(err, result){
         if(err){
             log.error(req.originalUrl, "fallo al obtener goleadores, error:", err)
-            res.send("{}");
+            res.sendStatus(500);
         }
         else
-            res.send(result);
+            res.status(200).send(result);
     });
 });
 
-router.get('/:tourny/teams/:name', function (req, res) {
+router.get('/tournaments/:tourny/teams/:name', function (req, res) {
     db.getTeamPlayersInTourny(req.params.tourny, req.params.name, function(err, result){
         if(err){
             log.error(req.originalUrl, "fallo al obtener plantel en torneo, error:", err)
-            res.send("{}");
+            res.sendStatus(500);
         }
         else
-            res.send(result);
+            res.status(200).send(result);
     });
 });
 
-router.get('/gameinfo/:game', function(req, res){
+router.get('/fixtures/:game', function(req, res){
    db.getGameInfo(req.params.game, function (err, result){
        if(err){
            log.error(req.originalUrl, "fallo al obtener detalles de partido, error:", err)
-           res.send("{}");
+           res.sendStatus(500);
        }
        else
-           res.send(result);
+           res.status(200).send(result);
     });
 });
 
@@ -102,7 +101,7 @@ router.get('/logo/:team', function(req, res){
         }
         res.setHeader("Cache-Control"," max-age=3600");
 
-        res.send({image: contents});
+        res.status(200).send({image: contents});
     });
 });
 
