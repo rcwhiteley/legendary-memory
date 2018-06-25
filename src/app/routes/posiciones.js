@@ -1,5 +1,34 @@
 const dbConnection = require('../../config/dbConnection');
 const db = require('../../database/mysqldal');
+
+function validarPartido(partido, callback){
+    db.getTeamsInTourny(1, (err, res)=>{
+        let existeLocal = false;
+        let existeVisita = false;
+        for(let i = 0; i < res.length; i++){
+            if(res[i].equipos_nombre === partido.local){
+                existeLocal = true;
+            }
+            if(res[i].equipos_nombre !== partido.visita){
+                existeVisita = true;
+            }
+        }
+        if(!existeLocal){
+            console.log("no existe local");
+        }
+
+        if(!existeVisita){
+            console.log("no existe visita");
+        }
+        if(partido.local === partido.visita){
+            console.log("son iguales");
+        }
+        callback(existeLocal === true && existeVisita === true && partido.local !== partido.visita);
+
+    });
+
+}
+
 module.exports = app => {
 
     /*app.get('/:pagina', (req,res)=> {
@@ -32,10 +61,34 @@ module.exports = app => {
 
     app.get('/partidos', (req, res)=>{
        db.getGames(1, (err, result)=>{
-           console.log(result);
-           res.render('dinamico/partidos', {
-               partidos: result
+           db.getTeamsInTourny(1, (err1, result1)=>{
+               console.log(result1);
+                res.render('dinamico/partidos', {
+                    partidos: result,
+                    equipos : result1
+                });
           });
        });
     });
+    app.post('/agregarpartido', (req, res)=>{
+        console.log(req.body);
+        validarPartido(req.body, (valid) => {
+            console.log(valid);
+            if(valid === true){
+                db.agregarPartido(1, req.body, result=>{
+                    if(result === "ok") {
+                        res.redirect("/partidos");
+                    }
+                    else{
+                        res.send("no se pudo agregar el partido");
+                    }
+                });
+            }
+            else if(valid === false)
+                res.send("los datos del partido no son validos");
+            else
+                res.send("ocurrio un error inesperado " + validado);
+        });
+    });
+
 };

@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title></title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
 </head>
 <body>
 <%include headmenu.html%>
@@ -12,12 +13,16 @@
             <div class="col-md-6 mt-4 text-center">
                 <table class="table table-striped">
                     <tr>
+                        <th>Fecha</th>
+                        <th>Hora</th>
                         <th>Local</th>
                         <th>Marcador</th>
                         <th>Visita</th>
                     </tr>
                     <% for(var i = 0; i < partidos.length; i++) { %>
-                    <tr >
+                    <tr onclick="window.location='/<%= partidos[i].torneos_id %>/<%= partidos[i].partidos_id %>';">
+                        <td><%= new Date(partidos[i].fecha).toLocaleDateString("es-ES", {year:"numeric", month:"2-digit", day:"2-digit"}) %></td>
+                        <td><%= new Date(partidos[i].fecha).toLocaleTimeString("es-ES", {hour:"2-digit", minute:"2-digit"})  %></td>
                         <td><%= partidos[i].local_nombre %></td>
                         <td><%= partidos[i].local_goles %>:<%= partidos[i].visita_goles %></td>
                         <td><%= partidos[i].visita_nombre %></td>
@@ -25,12 +30,43 @@
                     <% } %>
                 </table>
             </div>
-
+            <div class="col-md-6 mt-4 card">
+                <form action="/agregarpartido" method="post" class="card-body">
+                    <h3 class="card-title">Agregar Partido</h3>
+                    <div class="form-group">
+                        <label for="local">Equipo Local:</label>
+                        <select name="local" class="form-control" id="local">
+                            <% for(var i = 0; i < equipos.length; i++) { %>
+                            <option><%= equipos[i].equipos_nombre%></option>
+                            <% } %>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="visita">Equipo Visita:</label>
+                        <select name="visita" class="form-control" id="visita">
+                            <% for(var i = 0; i < equipos.length; i++) { %>
+                            <option><%= equipos[i].equipos_nombre %></option>
+                            <% } %>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="fecha">Fecha:</label>
+                        <input class="form-control" type="datetime-local" id="fecha"
+                               name="fecha" value="<%= new Date().toLocaleDateString("es-ES", {year:"numeric",month:"2-digit", day:"2-digit"}) + 'T' + new Date().getHours().toLocaleString('es-ES', {minimumIntegerDigits:2}) + ":" +  new Date().getMinutes().toLocaleString("es-ES", {minimumIntegerDigits:2})%>" />
+                    </div>
+                    <input type="submit" class="btn btn-primary">
+                </form>
+            </div>
 
         </div>
     </div>
     <script>
         document.getElementById('equipo').focus();
+        jQuery(document).ready(function($) {
+            $(".clickable-row").click(function() {
+                window.location = $(this).data("href");
+            });
+        });
     </script>
     </body>
 </html>
