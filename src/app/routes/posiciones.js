@@ -1,7 +1,9 @@
 const dbConnection = require('../../config/dbConnection');
 const db = require('../../database/mysqldal');
+const log = require('../../config/logger');
 
 function validarPartido(partido, callback){
+    log.debug("validando partido", JSON.stringify(partido));
     db.getTeamsInTourny(1, (err, res)=>{
         let existeLocal = false;
         let existeVisita = false;
@@ -14,14 +16,14 @@ function validarPartido(partido, callback){
             }
         }
         if(!existeLocal){
-            console.log("no existe local");
+            log.debug("no existe local");
         }
 
         if(!existeVisita){
-            console.log("no existe visita");
+            log.debug("no existe visita");
         }
         if(partido.local === partido.visita){
-            console.log("son iguales");
+            log.debug("los equipos son iguales");
         }
         callback(existeLocal === true && existeVisita === true && partido.local !== partido.visita);
 

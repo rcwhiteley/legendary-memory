@@ -1,15 +1,10 @@
 const dbConnection = require('../config/dbConnection');
-
+const log = require('../config/logger');
 connection = dbConnection();
 
 
 exports.getTournies = function (callback) {
-    connection.query("SELECT * FROM torneos;", function (err, res) {
-        if (!err) {
-            console.log("no err");
-        }
-        callback(err, res);
-    });
+    connection.query("SELECT * FROM torneos;", callback);
 };
 
 exports.getStandings = function (tournyId, callback) {
@@ -63,7 +58,7 @@ exports.agregarPartido = function(torneo, partido, callback){
         connection.query('INSERT into partidos values(default, ?, ?)', [torneo, partido.fecha], function (err, result) {
             if (err) {
                 connection.rollback(function(){});
-                console.log(err);
+                log.error("fallo al insertar partido", JSON.stringify(partido), "error:", err)
                 callback(err);
                 return;
             }
@@ -71,14 +66,14 @@ exports.agregarPartido = function(torneo, partido, callback){
             connection.query('insert into equipos_partidos values(?, ?, 1), (?, ?, 2)',
                 [partido.local, partidoId, partido.visita, partidoId], (err1, result1) =>{
                 if(err1){
-                    console.log(err1);
+                    log.error("fallo al insertar localias de partido error:", err1);
                     connection.rollback(function(){});
                     callback(err);
                     return;
                 }
                 connection.commit(function(err2) {
                     if(err2){
-                        console.log(err2);
+                        log.error("fallo al hacer commit en insercion de partidos error:", err1);
                         connection.rollback(function(){});
                         callback(err2);
                         return;
