@@ -43,6 +43,14 @@ exports.getTeamPlayersInTourny = function (tournyId, equipo, callback) {
     connection.query('select * from plantel_detalles_view where torneos_id=? and equipos_nombre=?;', [tournyId, equipo], callback);
 };
 
+exports.getSeasons = function(callback){
+    connection.query("select * from temporada", callback);
+}
+
+exports.getSeasonTournaments = function(seasonId, callback){
+    connection.query("select * from torneos where temporada_id=?", [seasonId], callback);
+}
+
 exports.getGameInfo = function (partido, callback) {
     connection.query("select * from( " +
         "select partidos_id, nombre, jugadores_matricula, equipos_nombre, minuto, 'gol' as evento " +

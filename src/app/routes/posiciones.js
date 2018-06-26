@@ -39,7 +39,7 @@ module.exports = app => {
 
     app.get('/agregarequipo',(req, res) => {
         db.getTeams((err, result) => {
-            console.log(result);
+            //console.log(result);
             res.render('dinamico/agregarequipo', {
                 equipos: result
             });
