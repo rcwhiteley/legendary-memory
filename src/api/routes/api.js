@@ -83,14 +83,16 @@ router.post('/tournaments/:tourny/fixtures', function(req, res){
 
 
 router.get('/tournaments/:tourny/teams', function(req, res){
-
-    db.getTeams(req.params.tourny, function(err, result){
+    log.debug("intentando obtener torneos");
+    db.getTeamsInTourny(req.params.tourny, function(err, result){
         if(err){
             log.error(req.originalUrl, "fallo al obtener equipos, error:", err)
             res.sendStatus(500);
         }
-        else
+        else {
+            log.debug("enviando status 200");
             res.status(200).send(result);
+        }
     });
 });
 
