@@ -11,6 +11,7 @@ app.set('views', path.join(__dirname, '../app/views'));
 
 // mdiddleware
 
+
 app.use(bodyParser.urlencoded({extended: false}));
 
 module.exports =app;

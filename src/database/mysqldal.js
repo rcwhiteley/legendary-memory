@@ -14,7 +14,7 @@ exports.getStandings = function (tournyId, callback) {
 
 exports.getGames = function (tournyId, callback) {
     connection.query(
-        "SELECT * FROM partidos_view where torneos_id=? order by fecha asc", [tournyId], callback);
+        "SELECT * FROM partidos_view where torneos_id=? order by fecha desc", [tournyId], callback);
 };
 
 exports.getTeamsInTourny = function (tournyId, callback) {
@@ -61,32 +61,38 @@ exports.getGameInfo = function (partido, callback) {
         "where partidos_id=? order by minuto;", [partido], callback);
 };
 
+exports.getGame = function(partido, callback){
+    connection.query("select * from partidos_view where partidos_id=?", [partido], callback);
+}
+
 exports.agregarPartido = function(torneo, partido, callback){
     connection.beginTransaction(transactionErr => {
-        connection.query('INSERT into partidos values(default, ?, ?)', [torneo, partido.fecha], function (err, result) {
+        connection.query('INSERT into partidos values(default, ?, ?)', [torneo, new Date(partido.fecha)], function (err, result) {
             if (err) {
                 connection.rollback(function(){});
                 log.error("fallo al insertar partido", JSON.stringify(partido), "error:", err)
-                callback(err);
+                callback(-1 ,err);
                 return;
             }
+
             let partidoId = result.insertId;
+            log.debug("partidoId:", result.insertId);
             connection.query('insert into equipos_partidos values(?, ?, 1), (?, ?, 2)',
                 [partido.local, partidoId, partido.visita, partidoId], (err1, result1) =>{
                 if(err1){
                     log.error("fallo al insertar localias de partido error:", err1);
                     connection.rollback(function(){});
-                    callback(err);
+                    callback(-1, err);
                     return;
                 }
                 connection.commit(function(err2) {
                     if(err2){
                         log.error("fallo al hacer commit en insercion de partidos error:", err1);
                         connection.rollback(function(){});
-                        callback(err2);
+                        callback(-1, err2);
                         return;
                     }
-                    callback("ok");
+                    callback(partidoId, "");
                 });
             });
         });
