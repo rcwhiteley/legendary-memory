@@ -5,6 +5,7 @@ module.exports = () => {
         host: 'db4free.net',
         user: 'pineraql1',
         password: 'pineraql1',
-        database: 'futbol_db'
+        database: 'futbol_db',
+        multipleStatements: true
     });
 };

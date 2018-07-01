@@ -1,0 +1,151 @@
+<div id="sustituciones" class="collapse row">
+    <div colspan="8" class="col-md-8 mt-4 text-center">
+        <table class="table table-bordered table-striped table-sm">
+            <tr >
+                <th>Equipo</th>
+                <th>Minuto</th>
+                <th>Matricula</th>
+                <th>Nombre</th>
+            </tr>
+            <% for(var i = 0; i < sustituciones.length; i++) { %>
+            <tr>
+                <td class="align-middle" rowspan="3"><%= sustituciones[i].equipos_nombre %></td>
+                <td class="align-middle" rowspan="3"><%= sustituciones[i].minuto %>'</td>
+            </tr>
+            <tr class="bg-success">
+
+                <td><%= sustituciones[i].entra_jugadores_matricula %></td>
+                <td><%= sustituciones[i].entra_jugadores_nombre %></td>
+
+            </tr>
+            <tr class="bg-danger">
+                <td><%= sustituciones[i].sale_jugadores_matricula %></td>
+                <td><%= sustituciones[i].sale_jugadores_nombre %></td>
+            </tr>
+            <% } %>
+        </table>
+    </div>
+    <div colspan="4" class="col-md-4 mt-4 card">
+        <nav>
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                <a class="nav-item nav-link active" id="nav-subs-local-tab" data-toggle="tab" href="#nav-subs-local" role="tab" aria-controls="nav-subs-local" aria-selected="true"><%= partido.local_nombre%></a>
+                <a class="nav-item nav-link" id="nav-subs-visita-tab" data-toggle="tab" href="#nav-subs-visita" role="tab" aria-controls="nav-subs-visita" aria-selected="false"><%= partido.visita_nombre%></a>
+            </div>
+        </nav>
+        <div class="tab-content" id="nav-tabContent">
+
+            <!-- Local -->
+            <div class="tab-pane show form-group active" id="nav-subs-local" role="tabpanel" aria-labelledby="nav-subs-local-tab">
+                <div class="form-group">
+                    <label for="local-entra">Entra:</label>
+                    <select name="local-entra" class="form-control" id="local-entra">
+                        <% for(var i = 0; i < jugadores.length; i++) { %>
+                        <% if(jugadores[i].equipos_nombre == partido.local_nombre){%>
+                        <option><%= jugadores[i].jugadores_matricula%> - <%= jugadores[i].nombre%></option>
+                        <% } } %>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="local-sale">Sale:</label>
+                    <select name="local-sale" class="form-control" id="local-sale">
+                        <% for(var i = 0; i < jugadores.length; i++) { %>
+                        <% if(jugadores[i].equipos_nombre == partido.local_nombre){%>
+                        <option><%= jugadores[i].jugadores_matricula%> - <%= jugadores[i].nombre%></option>
+                        <% } } %>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="cambio-local-minuto">Minuto:</label>
+                    <input class="form-control" type="number" id="cambio-local-minuto"
+                           min="0" name="cambio-local-minuto" />
+
+                </div>
+                <button id="submit-cambio-local" class="btn btn-primary">Agregar</button>
+            </div>
+
+            <!-- visita -->
+            <div class="tab-pane  form-group" id="nav-subs-visita" role="tabpanel" aria-labelledby="nav-subs-visita-tab">
+                <div class="form-group">
+                    <label for="local-entra">Entra:</label>
+                    <select name="local-entra" class="form-control" id="local-entra">
+                        <% for(var i = 0; i < jugadores.length; i++) { %>
+                        <% if(jugadores[i].equipos_nombre == partido.visita_nombre){%>
+                        <option><%= jugadores[i].jugadores_matricula%> - <%= jugadores[i].nombre%></option>
+                        <% } } %>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="visita-sale">Sale:</label>
+                    <select name="visita-sale" class="form-control" id="visita-sale">
+                        <% for(var i = 0; i < jugadores.length; i++) { %>
+                        <% if(jugadores[i].equipos_nombre == partido.visita_nombre){%>
+                        <option><%= jugadores[i].jugadores_matricula%> - <%= jugadores[i].nombre%></option>
+                        <% } } %>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="cambio-visita-minuto">Minuto:</label>
+                    <input class="form-control" type="number" id="cambio-visita-minuto"
+                           min="0" name="cambio-visita-minuto" />
+
+                </div>
+                <button id="submit-cambio-visita" class="btn btn-primary">Agregar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    enviarSustitucion = function(entra, sale, minuto){
+        showPleaseWait();
+
+        let callBody = {
+            "entra_matricula": entra,
+            "sale_matricula": sale,
+            "minuto": minuto
+        }
+        console.log(callBody);
+        $.ajax({
+                url: '/api/fixtures/<%= partido.partidos_id %>/sustituciones',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(callBody),
+                success: function (response) {
+                    setProgress(100);
+                    hidePleaseWait();
+                },
+                error: function (error) {
+                    setProgress(100);
+                    hidePleaseWait();
+                    //alert("No se pudo conectar con el servidor");
+                }
+            }
+        );
+    }
+
+    $("#submit-cambio-local").click(function(e) {
+        let sale = document.getElementById("local-sale").value.split("-").map(function (item) {
+            return item.trim();
+        })[0];;
+        let entra = document.getElementById("local-entra").value.split("-").map(function (item) {
+            return item.trim();
+        })[0];
+        let minuto = document.getElementById("cambio-local-minuto").value;
+        enviarSustitucion(entra, sale, minuto);
+    });
+
+    $("#submit-cambio-visita").click(function(e) {
+        let sale = document.getElementById("visita-sale").value.split("-").map(function (item) {
+            return item.trim();
+        })[0];;
+        let entra = document.getElementById("visita-entra").value.split("-").map(function (item) {
+            return item.trim();
+        })[0];
+        let minuto = document.getElementById("cambio-visita-minuto").value;
+        enviarSustitucion(entra, sale, minuto);
+    });
+</script>

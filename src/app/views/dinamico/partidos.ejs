@@ -16,7 +16,7 @@
 <%include headmenu.html%>
     <div class="container">
         <div class="row">
-            <div class="col-md-6 mt-4 text-center">
+            <div colspan="8" class="col-md-8 mt-4 text-center">
                 <table id="fixtures" class="table table-striped" name="fixtures">
                     <tr>
                         <th>Fecha</th>
@@ -25,18 +25,20 @@
                         <th>Marcador</th>
                         <th>Visita</th>
                     </tr>
+                    <!-- Datos basicos del partido -->
                     <% for(var i = 0; i < partidos.length; i++) { %>
-                    <tr onclick="window.location='/<%= partidos[i].torneos_id %>/<%= partidos[i].partidos_id %>';">
+                    <tr>
                         <td><%= new Date(partidos[i].fecha).toLocaleDateString("es-ES", {year:"numeric", month:"2-digit", day:"2-digit"}) %></td>
                         <td><%= new Date(partidos[i].fecha).toLocaleTimeString("es-ES", {hour:"2-digit", minute:"2-digit"})  %></td>
                         <td><%= partidos[i].local_nombre %></td>
                         <td><%= partidos[i].local_goles %>:<%= partidos[i].visita_goles %></td>
                         <td><%= partidos[i].visita_nombre %></td>
                     </tr>
+
                     <% } %>
                 </table>
             </div>
-            <div class="col-md-6 mt-4 card">
+            <div colspan="4" class="col-md-4 mt-4 card">
                 <div class="card-body">
                     <h3 class="card-title">Agregar Partido</h3>
                     <div class="form-group">
@@ -61,9 +63,7 @@
                                name="fecha" value="<%= new Date().toLocaleDateString("es-ES", {year:"numeric",month:"2-digit", day:"2-digit"}) + 'T' + new Date().getHours().toLocaleString('es-ES', {minimumIntegerDigits:2}) + ":" +  new Date().getMinutes().toLocaleString("es-ES", {minimumIntegerDigits:2})%>" />
                     </div>
 
-                    <!--<input type="submit" class="btn btn-primary"> -->
                     <button id="submitbtn" class="btn btn-primary">Agregar</button>
-
 
                     <script>
 
@@ -125,7 +125,7 @@
         </div>
     </div>
     <script>
-        document.getElementById('equipo').focus();
+        //document.getElementById('equipo').focus();
         jQuery(document).ready(function($) {
             $(".clickable-row").click(function() {
                 window.location = $(this).data("href");

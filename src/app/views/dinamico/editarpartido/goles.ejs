@@ -1,0 +1,79 @@
+<div id="goles" class="collapse row">
+    <div colspan="8" class="col-md-8 mt-4 text-center">
+        <table class="table table-striped">
+            <tr>
+                <th>Equipo</th>
+                <th>Matricula</th>
+                <th>Nombre</th>
+                <th>Minuto</th>
+            </tr>
+
+            <% for(var i = 0; i < goles.length; i++) { %>
+            <tr >
+                <td><%= goles[i].equipos_nombre %></td>
+                <td><%= goles[i].jugadores_matricula %></td>
+                <td><%= goles[i].nombre %></td>
+                <td><%= goles[i].minuto %>'</td>
+            </tr>
+
+            <% } %>
+        </table>
+    </div>
+    <div colspan="4" class="col-md-4 mt-4 card">
+        <div class="card-body">
+            <h3 class="card-title">Agregar gol</h3>
+            <div class="form-group">
+                <label for="gol-jugador">Jugador:</label>
+                <select name="gol-jugador" class="form-control" id="gol-jugador">
+                    <% for(var i = 0; i < jugadores.length; i++) { %>
+                    <option><%= jugadores[i].jugadores_matricula%> - <%= jugadores[i].nombre%></option>
+                    <% } %>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="minuto-gol">Minuto:</label>
+                <input class="form-control" type="number" id="minuto-gol"
+                       min="0" name="minuto-gol" />
+
+            </div>
+            <button id="submit-gol" class="btn btn-primary">Agregar</button>
+        </div>
+    </div>
+</div>
+<script>
+    $("#submit-gol").click(function(e) {
+        showPleaseWait();
+        let jugador = document.getElementById("gol-jugador").value;
+        let minuto = document.getElementById("minuto-gol").value;
+
+
+        let arr = jugador.split("-").map(function (item) {
+            return item.trim();
+        });
+        // now have option.text, option.value
+        console.log(arr[0]);
+        console.log(arr[1]);
+        let callBody = {
+            "jugadores_matricula": arr[0],
+            "nombre": arr[1],
+            "minuto": minuto
+        }
+        console.log(callBody);
+        $.ajax({
+                url: '/api/fixtures/<%= partido.partidos_id %>/goles',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(callBody),
+                success: function (response) {
+                    setProgress(100);
+                    hidePleaseWait();
+                },
+                error: function (error) {
+                    setProgress(100);
+                    hidePleaseWait();
+                    //alert("No se pudo conectar con el servidor");
+                }
+            }
+        );
+    });
+</script>

@@ -186,5 +186,40 @@ router.post('/logo/:team', function(req, res){
     res.sendStatus(200);
 });
 
+router.post('/fixtures/:game/jugadores', function(req, res) {
+    log.debug("editando juagador", JSON.stringify(req.body));
+    log.debug("en partido", req.params.game);
+    log.debug("jugador matricula", req.body.jugadores_matricula);
+    log.debug("con titularidad", req.body.titularidad);
+    db.addOrUpdatePlayerInGame(req.params.game, req.body, function (err, result) {
+        log.debug(err, result);
+        res.sendStatus(200);
+    });
+});
+
+router.post('/fixtures/:game/goles', function (req, res) {
+   log.debug("agregando gol", JSON.stringify(req.body));
+   db.addGoal(req.params.game, req.body, function(err, result){
+       log.debug(err);
+       res.sendStatus(200);
+   });
+});
+
+router.post('/fixtures/:game/tarjetas', function (req, res) {
+   log.debug("agregando tarjeta", JSON.stringify(req.body));
+   db.addCard(req.params.game, req.body, function (err, result) {
+      log.debug(err);
+      res.sendStatus(200);
+   });
+});
+
+router.post('/fixtures/:game/sustituciones', function (req, res) {
+    log.debug("agregando sustitucion", JSON.stringify(req.body));
+    db.addSubstitution(req.params.game, req.body, function (err, result) {
+        log.debug(err);
+        res.sendStatus(200);
+    });
+});
+
 
 module.exports = router;

@@ -63,13 +63,36 @@ module.exports = app => {
     app.get('/partidos', (req, res)=>{
        db.getGames(1, (err, result)=>{
            db.getTeamsInTourny(1, (err1, result1)=>{
-               //console.log(result1);
+                log.debug(result1);
                 res.render('dinamico/partidos', {
                     partidos: result,
                     equipos : result1
                 });
           });
        });
+    });
+
+    app.get('/editarpartido/:game', (req,res)=>{
+        db.getGame(req.params.game, (err, result)=>{
+            log.debug(JSON.stringify(result));
+            db.getGameTeams(req.params.game, (err1, result1)=> {
+                db.getGameSantions(req.params.game, (err2, result2)=> {
+                    db.getGameGoals(req.params.game, (err3, result3)=>{
+                        db.getGameSubs(req.params.game, (err4, result4)=>{
+                            res.render('dinamico/editarpartido',
+                                {
+                                    partido: result[0],
+                                    jugadores: result1,
+                                    tarjetas: result2,
+                                    goles: result3,
+                                    sustituciones: result4
+                                });
+                        });
+                    });
+                });
+            });
+        });
+
     });
     app.post('/agregarpartido', (req, res)=>{
         console.log(req.body);

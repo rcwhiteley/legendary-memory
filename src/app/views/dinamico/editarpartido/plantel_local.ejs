@@ -1,0 +1,134 @@
+<div id="local" class="collapse col-md-12 mt-4">
+    <div class="row text-center">
+        <div class="col-sm-4">
+            <label class="bottom-label" for="titulares-local">Titulares:</label>
+            <select multiple class="form-control" id="titulares-local">
+                <%
+                for(var i = 0; i < jugadores.length; i++) {
+                if(jugadores[i].equipos_nombre == partido.local_nombre && jugadores[i].titularidad == 1){
+                %>
+                <option><%=jugadores[i].jugadores_matricula %> - <%= jugadores[i].nombre%></option>
+                <%
+                }
+                }
+                %>
+            </select>
+            <button id="btn-titular-a-plantel-local" class="btn btn-basic">></button>
+        </div>
+        <div class="col-sm-4">
+
+            <label for="plantel-local">Plantel:</label>
+            <select multiple class="form-control" id="plantel-local">
+                <%
+                for(var i = 0; i < jugadores.length; i++) {
+                if(jugadores[i].equipos_nombre == partido.local_nombre && jugadores[i].titularidad == 3){
+                %>
+                <option><%=jugadores[i].jugadores_matricula %> -  <%= jugadores[i].nombre%></option>
+                <%
+                }
+                }
+                %>
+            </select>
+            <button id="btn-a-titular-local" class="btn btn-default" ><</button>
+            <button id="btn-a-reserva-local" class="btn btn-default">></button>
+        </div>
+        <div class="col-sm-4">
+
+            <label for="reserva-local">Reserva:</label>
+            <select multiple class="form-control" id="reserva-local">
+                <%
+                for(var i = 0; i < jugadores.length; i++) {
+                if(jugadores[i].equipos_nombre == partido.local_nombre && jugadores[i].titularidad == 2){
+                %>
+                <option><%=jugadores[i].jugadores_matricula %> - <%= jugadores[i].nombre%></option>
+                <%
+                }
+                }
+                %>
+            </select>
+            <button id="btn-reserva-a-plantel-local" class="btn btn-default"><</button>
+        </div>
+    </div>
+    <div class="form-group">
+        <button id="guardar-local" class="btn btn-primary">Guardar</button>
+    </div>
+</div>
+
+<script>
+    $().ready(function() {
+        $('#btn-reserva-a-plantel-local').click(function() {
+            return !$('#reserva-local option:selected').remove().appendTo('#plantel-local');
+        });
+        $('#btn-titular-a-plantel-local').click(function() {
+            return !$('#titulares-local option:selected').remove().appendTo('#plantel-local');
+        });
+        $('#btn-a-reserva-local').click(function() {
+            return !$('#plantel-local option:selected').remove().appendTo('#reserva-local');
+        });
+        $('#btn-a-titular-local').click(function() {
+            return !$('#plantel-local option:selected').remove().appendTo("#titulares-local");
+        });
+    });
+
+
+    $("#guardar-local").click(function(e){
+        showPleaseWait();
+        let select = document.getElementById("titulares-local");
+        let select2 = document.getElementById("plantel-local");
+        let select3 = document.getElementById("reserva-local");
+        let count = select.length + select2.length + select3.length;
+        let currentCalls = 0;
+
+        for (let i = 0; i < count; i++) {
+            let titularidad = 1;
+            let option = undefined;
+            if(i < select.length) {
+                option = select.options[i].value;
+            }
+            else if(i < select.length + select2.length){
+                titularidad = 3;
+                option = select2[i - select.length].value;
+            }
+            else{
+                titularidad = 2;
+                option = select3[i - select.length - select2.length].value;
+            }
+            let arr = option.toString().split("-").map(function (item) {
+                return item.trim();
+            });
+            // now have option.text, option.value
+            console.log(arr[0]);
+            console.log(arr[1]);
+            let callBody = {
+                "equipos_nombre": "<%= partido.local_nombre %>",
+                "jugadores_matricula": arr[0],
+                "nombre": arr[1],
+                "titularidad": titularidad
+            }
+
+            $.ajax({
+                    url: '/api/fixtures/<%= partido.partidos_id %>/jugadores',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(callBody),
+                    success: function (response) {
+                        currentCalls = currentCalls+1;
+                        setProgress(currentCalls/count * 100);
+                        if(currentCalls == count) {
+                            hidePleaseWait();
+                        }
+
+                    },
+                    error: function (error) {
+                        currentCalls++;
+                        setProgress(currentCalls/count * 100);
+                        if (currentCalls == count) {
+                            hidePleaseWait();
+                        }
+                        //alert("No se pudo conectar con el servidor");
+                    }
+                }
+            )
+        }
+    });
+</script>

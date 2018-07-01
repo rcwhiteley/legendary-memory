@@ -1,0 +1,98 @@
+<div id="tarjetas" class="collapse row">
+    <div colspan="8" class="col-md-8 mt-4 text-center">
+        <table class="table table-striped ">
+            <tr>
+                <th>Equipo</th>
+                <th>Matricula</th>
+                <th>Nombre</th>
+                <th>Tarjeta</th>
+                <th>Minuto</th>
+            </tr>
+            <% for(var i = 0; i < tarjetas.length; i++) { %>
+            <tr>
+                <td><%= tarjetas[i].equipos_nombre %></td>
+                <td><%= tarjetas[i].jugadores_matricula %></td>
+                <td><%= tarjetas[i].nombre %></td>
+                <% if(tarjetas[i].tarjetas_id == 1) { %>
+                <td>amarilla</td>
+                <%} else {%>
+                <td>roja</td>
+                <% } %>
+                <td><%= tarjetas[i].minuto %>'</td>
+            </tr>
+            <% } %>
+        </table>
+    </div>
+    <div colspan="4" class="col-md-4 mt-4 card">
+        <div class="card-body">
+            <h3 class="card-title">Agregar tarjeta</h3>
+            <div class="form-group">
+                <label for="tarjeta-jugador">Jugador:</label>
+                <select name="tarjeta-jugador" class="form-control" id="tarjeta-jugador">
+                    <% for(var i = 0; i < jugadores.length; i++) { %>
+                    <option><%= jugadores[i].jugadores_matricula%> - <%= jugadores[i].nombre%></option>
+                    <% } %>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="tipo-tarjeta">Tipo de tarjeta:</label>
+                <select name="tipo-tarjeta" class="form-control" id="tipo-tarjeta">
+                    <option>Amarilla</option>
+                    <option>Roja</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="minuto-tarjeta">Minuto:</label>
+                <input class="form-control" type="number" id="minuto-tarjeta"
+                       name="minuto-tarjeta"  />
+            </div>
+            <div class="form-group">
+                <label for="duracion-tarjeta">Numero de fechas (duracion):</label>
+                <input class="form-control" type="number" id="duracion-tarjeta"
+                       name="duracion-tarjeta" val="1"/>
+            </div>
+
+            <button id="submit-tarjeta" class="btn btn-primary">Agregar</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    $("#submit-tarjeta").click(function(e) {
+        showPleaseWait();
+        let jugador = document.getElementById("tarjeta-jugador").value;
+        let minuto = document.getElementById("minuto-tarjeta").value;
+        let tipo = document.getElementById("tipo-tarjeta").value.toString() === "Amarilla" ? 1 : 2;
+        let duracion = document.getElementById("duracion-tarjeta").value;
+        let arr = jugador.split("-").map(function (item) {
+            return item.trim();
+        });
+        // now have option.text, option.value
+        console.log(arr[0]);
+        console.log(arr[1]);
+        let callBody = {
+            "jugadores_matricula": arr[0],
+            "nombre": arr[1],
+            "minuto": minuto,
+            "tipo": tipo,
+            "duracion": duracion
+        }
+        console.log(callBody);
+        $.ajax({
+                url: '/api/fixtures/<%= partido.partidos_id %>/tarjetas',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(callBody),
+                success: function (response) {
+                    setProgress(100);
+                    hidePleaseWait();
+                },
+                error: function (error) {
+                    setProgress(100);
+                    hidePleaseWait();
+                    //alert("No se pudo conectar con el servidor");
+                }
+            }
+        );
+    });
+</script>

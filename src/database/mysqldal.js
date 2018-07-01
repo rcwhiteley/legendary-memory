@@ -65,6 +65,22 @@ exports.getGame = function(partido, callback){
     connection.query("select * from partidos_view where partidos_id=?", [partido], callback);
 }
 
+exports.getGameTeams = function(partido, callback){
+    connection.query("select * from plantel_partido_view where partidos_id=?", [partido], callback);
+}
+
+exports.getGameSantions = function(partido, callback){
+    connection.query("select * from sanciones_jugador_view where partidos_id=?", [partido], callback);
+}
+
+exports.getGameGoals = function(partido, callback){
+    connection.query("select * from goles_jugador_view where partidos_id=?", [partido], callback);
+}
+
+exports.getGameSubs = function(partido, callback){
+    connection.query("select * from sustituciones_view where partidos_id=?", [partido], callback);
+}
+
 exports.agregarPartido = function(torneo, partido, callback){
     connection.beginTransaction(transactionErr => {
         connection.query('INSERT into partidos values(default, ?, ?)', [torneo, new Date(partido.fecha)], function (err, result) {
@@ -96,5 +112,72 @@ exports.agregarPartido = function(torneo, partido, callback){
                 });
             });
         });
+    });
+}
+
+exports.addOrUpdatePlayerInGame = function(partido, jugador, callback){
+    exports.getPlayerInGame(partido, jugador.jugadores_matricula, function(error, result){
+        if(error){
+            callback(error, result);
+        }
+        else if(result.length > 0){
+            log.debug("update jugador_partido set titularidad_tipo=? where partidos_id=? and jugadores_matricula=?",jugador.titularidad, partido, jugador.jugadores_matricula );
+            connection.query("update jugador_partido set titularidad_tipo=? where partidos_id=? and jugadores_matricula=?", [jugador.titularidad, partido, jugador.jugadores_matricula], callback);
+        }
+        else{
+            log.debug("insert into jugador_partido values (default, ?, ?, ?)", jugador.jugadores_matricula, partido, jugador.titularidad);
+            connection.query("insert into jugador_partido values (default, ?, ?, ?)", [jugador.jugadores_matricula, partido, jugador.titularidad], callback);
+        }
+    });
+};
+
+exports.getPlayerInGame = function(partido, jugador, callback){
+    log.debug("getPlayerInGame", "select * from jugador_partido where partidos_id=? and jugadores_matricula=?",partido, jugador);
+    connection.query("select * from jugador_partido where partidos_id=? and jugadores_matricula=?", [partido, jugador], callback);
+}
+
+exports.addGoal = function (partido, gol, callback) {
+    exports.getPlayerInGame(partido, gol.jugadores_matricula, function(error, result){
+        if(error || result.length <= 0){
+            callback(error, result);
+        }
+        else{
+            let jugador_partido_id = result[0].jugador_partido_id;
+            connection.query("insert into goles values (default, ?, ?, default)", [jugador_partido_id, gol.minuto], callback);
+        }
+    });
+};
+
+exports.addCard = function (partido, tarjeta, callback) {
+    exports.getPlayerInGame(partido, tarjeta.jugadores_matricula, function(error, result){
+        if(error || result.length <= 0){
+            callback(error, result);
+        }
+        else{
+            let jugador_partido_id = result[0].jugador_partido_id;
+            log.debug("insert into sanciones values (default, ?, ?, ?, ?, default)", tarjeta.tipo, jugador_partido_id, tarjeta.minuto, tarjeta.duracion);
+            connection.query("insert into sanciones values (default, ?, ?, ?, ?, default)", [tarjeta.tipo, jugador_partido_id, tarjeta.minuto, tarjeta.duracion], callback);
+        }
+    });
+};
+
+exports.addSubstitution = function(partido, sustitucion, callback){
+    exports.getPlayerInGame(partido, sustitucion.entra_matricula, function(error, result) {
+        if(error || result.length <= 0){
+            callback(error, result);
+        }
+        else{
+            exports.getPlayerInGame(partido, sustitucion.sale_matricula, function(error1, result1) {
+                if(error1 || result1.length <= 0){
+                    callback(error1, result1);
+                }
+                else{
+                    let entra = result[0].jugador_partido_id;
+                    let sale = result1[0].jugador_partido_id;
+                    connection.query("insert into sustituciones values (default, ?, ?, ?)", [entra, sale, sustitucion.minuto], callback);
+                }
+            });
+
+        }
     });
 }
