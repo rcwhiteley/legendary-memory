@@ -65,65 +65,66 @@
 
                     <button id="submitbtn" class="btn btn-primary">Agregar</button>
 
-                    <script>
 
-                        function getCellValue(row, index) {
-                            return $(row).children('td').eq(index).text()
-                        }
-
-                        $("#submitbtn").click(function(e){
-                            console.log("button click");
-                            const mom = moment($("#fecha1").val());
-                            var callBody = {
-                                "local": $("#local").val(),
-                                "visita": $("#visita").val(),
-                                "fecha": mom.toISOString()
-
-                            }
-
-                            $.ajax({
-                                url: '/api/fixtures/1',
-                                type: 'POST',
-                                contentType: 'application/json',
-                                data: JSON.stringify(callBody),
-                                success: function(response){
-                                    console.log("----", response, "-----");
-                                    if(response && response.length > 10 && $.parseJSON(response)[0].partidos_id > 0) {
-                                        game = $.parseJSON(response);
-
-                                        let newrow = '<tr><td>' + mom.format('YYYY-MM-DD') + '</td>' +
-                                            '<td>' + mom.format("HH:mm") + '</td><td>' + callBody.local + '</td>' +
-                                            '<td>0:0</td><td>' + callBody.visita + '</td></tr>';
-                                        let b = mom;
-                                        let index = -1;
-                                        $('#fixtures tr').each(function (i, row) {
-                                            let a = moment(getCellValue($(this), 0) + 'T' + getCellValue($(this), 1), "YYYY-MM-DDTHH-mm");
-                                            if (b.isSameOrAfter(a) && index === -1) {
-                                                index = i - 1;
-                                            }
-                                        });
-                                        console.log(index);
-                                        if (index === -1)
-                                            $('#fixtures tr:last').after(newrow);
-                                        else
-                                            $('#fixtures > tbody > tr:eq(' + index + ')').after(newrow);
-                                    }
-                                    else{
-                                        alert(response);
-                                    }
-                                },
-                                error: function(error){
-                                    alert("No se pudo conectar con el servidor");
-                                }}
-
-                            )
-                        });
-                    </script>
                 </div>
             </div>
 
         </div>
     </div>
+<script>
+
+    function getCellValue(row, index) {
+        return $(row).children('td').eq(index).text()
+    }
+
+    $("#submitbtn").click(function(e){
+        console.log("button click");
+        const mom = moment($("#fecha1").val());
+        var callBody = {
+            "local": $("#local").val(),
+            "visita": $("#visita").val(),
+            "fecha": mom.toISOString()
+
+        }
+
+        $.ajax({
+            url: '/api/fixtures/1',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(callBody),
+            success: function(response){
+                console.log("----", response, "-----");
+                if(response && response.length > 10 && $.parseJSON(response)[0].partidos_id > 0) {
+                    game = $.parseJSON(response);
+
+                    let newrow = '<tr><td>' + mom.format('YYYY-MM-DD') + '</td>' +
+                        '<td>' + mom.format("HH:mm") + '</td><td>' + callBody.local + '</td>' +
+                        '<td>0:0</td><td>' + callBody.visita + '</td></tr>';
+                    let b = mom;
+                    let index = -1;
+                    $('#fixtures tr').each(function (i, row) {
+                        let a = moment(getCellValue($(this), 0) + 'T' + getCellValue($(this), 1), "YYYY-MM-DDTHH-mm");
+                        if (b.isSameOrAfter(a) && index === -1) {
+                            index = i - 1;
+                        }
+                    });
+                    console.log(index);
+                    if (index === -1)
+                        $('#fixtures tr:last').after(newrow);
+                    else
+                        $('#fixtures > tbody > tr:eq(' + index + ')').after(newrow);
+                }
+                else{
+                    alert(response);
+                }
+            },
+            error: function(error){
+                alert("No se pudo conectar con el servidor");
+            }}
+
+        )
+    });
+</script>
     <script>
         //document.getElementById('equipo').focus();
         jQuery(document).ready(function($) {

@@ -74,7 +74,7 @@ exports.getGameSantions = function(partido, callback){
 }
 
 exports.getGameGoals = function(partido, callback){
-    connection.query("select * from goles_jugador_view where partidos_id=?", [partido], callback);
+    connection.query("select * from goles_jugador_view where partidos_id=? order by minuto asc", [partido], callback);
 }
 
 exports.getGameSubs = function(partido, callback){
@@ -139,6 +139,7 @@ exports.getPlayerInGame = function(partido, jugador, callback){
 exports.addGoal = function (partido, gol, callback) {
     exports.getPlayerInGame(partido, gol.jugadores_matricula, function(error, result){
         if(error || result.length <= 0){
+            log.debug("no se agregara el gol");
             callback(error, result);
         }
         else{
@@ -180,4 +181,20 @@ exports.addSubstitution = function(partido, sustitucion, callback){
 
         }
     });
-}
+};
+
+exports.removeCard = function(partido, tarjeta, callback){
+    connection.query("delete from sanciones where sanciones_id=?", [tarjeta], callback);
+};
+
+exports.removeSubstitution = function(partido, sustitucion, callback){
+    connection.query("delete from sustituciones where sustituciones_id=?", [sustitucion], callback);
+};
+
+exports.removeGoal = function(partido, gol, callback){
+    connection.query("delete from goles where goles_id=?", [gol], callback);
+};
+
+exports.getGoal = function(gol, callback){
+    connection.query("select * from goles_jugador_view where goles_id=?", [gol], callback);
+};

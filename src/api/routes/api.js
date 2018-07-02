@@ -200,8 +200,25 @@ router.post('/fixtures/:game/jugadores', function(req, res) {
 router.post('/fixtures/:game/goles', function (req, res) {
    log.debug("agregando gol", JSON.stringify(req.body));
    db.addGoal(req.params.game, req.body, function(err, result){
-       log.debug(err);
-       res.sendStatus(200);
+       if(err) {
+           log.debug("no se agrego");
+           log.debug(err);
+           res.sendStatus(500);
+       }
+       else {
+           let golId = result.insertId;
+           log.debug("gold id:" ,golId);
+           db.getGoal(golId, function(err1, result1){
+               if(err1){
+                   log.debug(err1);
+                   res.sendStatus(500);
+               }
+               else {
+                   console.log(JSON.stringify(result1))
+                   res.send(result1);
+               }
+           });
+       }
    });
 });
 
@@ -213,6 +230,44 @@ router.post('/fixtures/:game/tarjetas', function (req, res) {
    });
 });
 
+router.delete('/fixtures/:game/tarjetas', function(req, res){
+   log.debug("borrando sancion", req.body.sanciones_id, "en", req.params.game);
+   db.removeCard(req.params.game, req.body.sanciones_id, function(err, result){
+       if(err){
+           res.sendStatus(500);
+       }
+       else {
+           res.sendStatus(200);
+       }
+   });
+});
+
+router.delete('/fixtures/:game/sustituciones', function(req, res){
+    log.debug("borrando sustitucion", req.body.sustituciones_id, "en", req.params.game);
+    db.removeSubstitution(req.params.game, req.body.sustituciones_id, function(err, result){
+        if(err) {
+            log.debug(err);
+            res.sendStatus(500);
+        }
+        else{
+            res.sendStatus(200);
+        }
+    });
+});
+
+router.delete('/fixtures/:game/goles', function(req, res){
+    log.debug("borrando gol", req.body.goles_id, "en", req.params.game);
+    db.removeGoal(req.params.game, req.body.goles_id, function(err, result){
+        if(err){
+            log.debug(err);
+            res.sendStatus(500);
+        }
+        else {
+            res.sendStatus(200);
+        }
+    });
+});
+
 router.post('/fixtures/:game/sustituciones', function (req, res) {
     log.debug("agregando sustitucion", JSON.stringify(req.body));
     db.addSubstitution(req.params.game, req.body, function (err, result) {
@@ -220,6 +275,5 @@ router.post('/fixtures/:game/sustituciones', function (req, res) {
         res.sendStatus(200);
     });
 });
-
 
 module.exports = router;
