@@ -6,23 +6,23 @@
                 <th>Minuto</th>
                 <th>Matricula</th>
                 <th>Nombre</th>
+                <th></th>
             </tr>
-            <% for(var i = 0; i < sustituciones.length; i++) { %>
-            <tr>
-                <td class="align-middle" rowspan="3"><%= sustituciones[i].equipos_nombre %></td>
-                <td class="align-middle" rowspan="3"><%= sustituciones[i].minuto %>'</td>
+            <tr ng-repeat-start="sustitucion in sustituciones">
+                <td class="align-middle" rowspan="3">{{sustitucion.equipos_nombre }}</td>
+                <td class="align-middle" rowspan="3">{{sustitucion.minuto }}'</td>
             </tr>
             <tr class="bg-success">
 
-                <td><%= sustituciones[i].entra_jugadores_matricula %></td>
-                <td><%= sustituciones[i].entra_jugadores_nombre %></td>
+                <td>{{sustitucionentra_jugadores_matricula }}</td>
+                <td>{{sustitucion.entra_jugadores_nombre }}</td>
 
             </tr>
-            <tr class="bg-danger">
-                <td><%= sustituciones[i].sale_jugadores_matricula %></td>
-                <td><%= sustituciones[i].sale_jugadores_nombre %></td>
+            <tr ng-repeat-end class="bg-danger">
+                <td>{{ sustitucion.sale_jugadores_matricula }}</td>
+                <td>{{ sustitucion.sale_jugadores_nombre }}</td>
             </tr>
-            <% } %>
+
         </table>
     </div>
     <div colspan="4" class="col-md-4 mt-4 card">
@@ -38,27 +38,27 @@
             <div class="tab-pane show form-group active" id="nav-subs-local" role="tabpanel" aria-labelledby="nav-subs-local-tab">
                 <div class="form-group">
                     <label for="local-entra">Entra:</label>
-                    <select name="local-entra" class="form-control" id="local-entra">
-                        <% for(var i = 0; i < jugadores.length; i++) { %>
-                        <% if(jugadores[i].equipos_nombre == partido.local_nombre){%>
-                        <option><%= jugadores[i].jugadores_matricula%> - <%= jugadores[i].nombre%></option>
-                        <% } } %>
+                    <select
+                            ng-model="jugador_entra_local"
+                            ng-options="jugador.jugadores_matricula + ' - ' + jugador.nombre for jugador in plantel_local | filter:esSuplenteLocal"
+                            name="local-entra" class="form-control" id="local-entra">
+
                     </select>
                 </div>
 
                 <div class="form-group">
                     <label for="local-sale">Sale:</label>
-                    <select name="local-sale" class="form-control" id="local-sale">
-                        <% for(var i = 0; i < jugadores.length; i++) { %>
-                        <% if(jugadores[i].equipos_nombre == partido.local_nombre){%>
-                        <option><%= jugadores[i].jugadores_matricula%> - <%= jugadores[i].nombre%></option>
-                        <% } } %>
+                    <select
+                            ng-model="jugador_sale_local"
+                            ng-options="jugador.jugadores_matricula + ' - ' + jugador.nombre for jugador in plantel_local | filter:'!' + noConvocadoLocal"
+                            name="local-sale" class="form-control" id="local-sale">
+
                     </select>
                 </div>
 
                 <div class="form-group">
                     <label for="cambio-local-minuto">Minuto:</label>
-                    <input class="form-control" type="number" id="cambio-local-minuto"
+                    <input ng-model="sustitucion_minuto_local" class="form-control" type="number" id="cambio-local-minuto"
                            min="0" name="cambio-local-minuto" />
 
                 </div>
@@ -69,21 +69,20 @@
             <div class="tab-pane  form-group" id="nav-subs-visita" role="tabpanel" aria-labelledby="nav-subs-visita-tab">
                 <div class="form-group">
                     <label for="local-entra">Entra:</label>
-                    <select name="local-entra" class="form-control" id="local-entra">
-                        <% for(var i = 0; i < jugadores.length; i++) { %>
-                        <% if(jugadores[i].equipos_nombre == partido.visita_nombre){%>
-                        <option><%= jugadores[i].jugadores_matricula%> - <%= jugadores[i].nombre%></option>
-                        <% } } %>
+                    <select
+                            ng-model="jugador_entra_visita"
+                            ng-options="jugador.jugadores_matricula + ' - ' + jugador.nombre for jugador in plantel_visita | filter:esSuplenteLocal"
+                            name="local-entra" class="form-control" id="local-entra">
+
                     </select>
                 </div>
 
                 <div class="form-group">
                     <label for="visita-sale">Sale:</label>
-                    <select name="visita-sale" class="form-control" id="visita-sale">
-                        <% for(var i = 0; i < jugadores.length; i++) { %>
-                        <% if(jugadores[i].equipos_nombre == partido.visita_nombre){%>
-                        <option><%= jugadores[i].jugadores_matricula%> - <%= jugadores[i].nombre%></option>
-                        <% } } %>
+                    <select
+                            ng-model="jugador_sale_visita"
+                            ng-options="jugador.jugadores_matricula + ' - ' + jugador.nombre for jugador in plantel_visita | filter:'!' + noConvocadoLocal"
+                            name="visita-sale" class="form-control" id="visita-sale">
                     </select>
                 </div>
 

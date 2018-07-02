@@ -79,6 +79,7 @@ module.exports = app => {
                 db.getGameSantions(req.params.game, (err2, result2)=> {
                     db.getGameGoals(req.params.game, (err3, result3)=>{
                         db.getGameSubs(req.params.game, (err4, result4)=>{
+                            console.log("ahhhh", result[0]);
                             res.render('dinamico/editarpartido',
                                 {
                                     partido: result[0],

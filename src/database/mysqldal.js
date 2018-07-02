@@ -162,6 +162,10 @@ exports.addCard = function (partido, tarjeta, callback) {
     });
 };
 
+exports.getCard = function(tarjeta, callback){
+    connection.query("select * from sanciones_jugador_view where sanciones_id=?", [tarjeta], callback);
+};
+
 exports.addSubstitution = function(partido, sustitucion, callback){
     exports.getPlayerInGame(partido, sustitucion.entra_matricula, function(error, result) {
         if(error || result.length <= 0){
@@ -197,4 +201,8 @@ exports.removeGoal = function(partido, gol, callback){
 
 exports.getGoal = function(gol, callback){
     connection.query("select * from goles_jugador_view where goles_id=?", [gol], callback);
+};
+
+exports.getTeamPlayersInGame = function(equipo, partido, callback){
+    connection.query("select * from plantel_partido_view where partidos_id=? and equipos_nombre=?", [partido, equipo], callback);
 };

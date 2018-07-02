@@ -19,6 +19,7 @@
 
     var pleaseWait = $('#pleaseWaitDialog');
     showPleaseWait = function() {
+        setProgress(0);
         pleaseWait.modal('show');
     };
 
@@ -33,7 +34,7 @@
 
         window.setTimeout(function () {
             pleaseWait.modal('hide');
-            setProgress(0);
+
 
         },1000);
 
