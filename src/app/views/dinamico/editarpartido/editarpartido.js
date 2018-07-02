@@ -280,6 +280,7 @@ app.controller('app-ctrl', function($scope, $http){
         });
     }
     $scope.agregarTarjeta = function () {
+        showPleaseWait();
         console.log($scope.jugador_tarjeta);
         let callBody = {
             "jugadores_matricula": $scope.jugador_tarjeta.jugadores_matricula,
@@ -288,6 +289,7 @@ app.controller('app-ctrl', function($scope, $http){
             "tipo": $scope.tipo_tarjeta === "Amarilla" ? 1 : 2,
             "duracion": $scope.duracion_tarjeta
         }
+        setProgress(30);
         $http.post('/api/fixtures/' + $scope.partido_id + '/tarjetas', callBody)
             .then(function(response){
                 console.log("lesto");
@@ -302,12 +304,67 @@ app.controller('app-ctrl', function($scope, $http){
                 console.log(error);
             })
             .then(function(){
-
+                setProgress(100);
+                hidePleaseWait();
             });
     }
 
 
     /* Sustituciones */
-    $scope.
+    $http.get('/api/fixtures/' + $scope.partido_id + '/sustituciones')
+        .then(function(response){
+            $scope.sustituciones=response.data;
+        }, function(error){
+
+        });
+    $scope.removerSustitucion = function(sustitucion_id){
+        showPleaseWait();
+        console.log("borrar ", sustitucion_id);
+        setProgress(30);
+        $http.delete('/api/fixtures/' + $scope.partido_id + '/sustituciones/' + sustitucion_id)
+            .then(function(response){
+                console.log(response.data)
+                let index = -1;
+                for (let i = 0; i < $scope.sustituciones.length; i++) {
+                    if ($scope.sustituciones[i].sustituciones_id === sustitucion_id)
+                        index = i;
+                }
+                if (index >= 0) {
+                    console.log("removiendo");
+                    $scope.sustituciones.splice(index, 1);
+                }
+            }, function(error){
+                console.log(error);
+            })
+            .then(function () {
+                setProgress(100);
+                hidePleaseWait();
+            });
+    };
+
+    $scope.agregarSustitucion = function(entra, sale, minuto){
+        showPleaseWait();
+        let callBody = {
+            "entra_matricula": entra.jugadores_matricula,
+            "sale_matricula": sale.jugadores_matricula,
+            "minuto": minuto
+        }
+        console.log("enviando:");
+        console.log(callBody);
+        setProgress(30);
+        $http.post('/api/fixtures/' + $scope.partido_id + '/sustituciones', callBody)
+            .then(function (response) {
+                console.log(response.data);
+                if(response.data.length > 0){
+                    $scope.sustituciones.push(response.data[0]);
+                }
+            }, function(error){
+                console.log(error);
+            })
+            .then(function () {
+                setProgress(100);
+                hidePleaseWait();
+            });
+    }
 });
 
