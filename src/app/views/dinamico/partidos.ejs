@@ -24,6 +24,7 @@
                         <th>Local</th>
                         <th>Marcador</th>
                         <th>Visita</th>
+                        <th></th>
                     </tr>
                     <!-- Datos basicos del partido -->
                     <% for(var i = 0; i < partidos.length; i++) { %>
@@ -33,6 +34,7 @@
                         <td><%= partidos[i].local_nombre %></td>
                         <td><%= partidos[i].local_goles %>:<%= partidos[i].visita_goles %></td>
                         <td><%= partidos[i].visita_nombre %></td>
+                        <td><a href="/editarpartido/<%=partidos[i].partidos_id%>" class="btn btn-default">Editar</a></td>
                     </tr>
 
                     <% } %>

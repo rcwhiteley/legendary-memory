@@ -10,12 +10,12 @@
                 <th></th>
             </tr>
             <tr ng-repeat="gol in goles | orderBy:'minuto'" id="gol-{{gol.goles_id}}">
-                <td>{{gol.equipos_nombre}}</td>
-                <td>{{gol.jugadores_matricula }}</td>
-                <td>{{gol.nombre }}</td>
-                <td>{{gol.minuto}}'</td>
-                <td>
-                    <button ng-click="removerGol(gol.goles_id)" class="btn btn-link remover-gol" gol-id="{{gol.goles_id}}">
+                <td class="align-middle">{{gol.equipos_nombre}}</td>
+                <td class="align-middle">{{gol.jugadores_matricula }}</td>
+                <td class="align-middle">{{gol.nombre }}</td>
+                <td class="align-middle">{{gol.minuto}}'</td>
+                <td >
+                    <button ng-click="removerGol(gol.goles_id)" class="btn btn-link ">
                         Remover
                     </button>
                 </td>

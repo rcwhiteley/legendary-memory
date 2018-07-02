@@ -310,7 +310,7 @@ app.controller('app-ctrl', function($scope, $http){
     }
 
 
-    /* Sustituciones */
+    /* SUSTITUCIONES */
     $http.get('/api/fixtures/' + $scope.partido_id + '/sustituciones')
         .then(function(response){
             $scope.sustituciones=response.data;
