@@ -9,14 +9,15 @@
                 <th></th>
             </tr>
             <tr ng-repeat-start="sustitucion in sustituciones">
-                <td class="align-middle" rowspan="3">{{sustitucion.equipos_nombre }}</td>
-                <td class="align-middle" rowspan="3">{{sustitucion.minuto }}'</td>
-            </tr>
-            <tr class="bg-success">
-
-                <td>{{sustitucionentra_jugadores_matricula }}</td>
-                <td>{{sustitucion.entra_jugadores_nombre }}</td>
-
+                <td class="align-middle" rowspan="2">{{sustitucion.equipos_nombre }}</td>
+                <td class="align-middle" rowspan="2">{{sustitucion.minuto }}'</td>
+                <td class="bg-success">{{sustitucion.entra_jugadores_matricula }}</td>
+                <td class="bg-success">{{sustitucion.entra_jugadores_nombre }}</td>
+                <td>
+                    <button rowspan="2" ng-click="removerSustitucion(sustitucion.sustituciones_id)" class="btn btn-link"">
+                        Remover
+                    </button>
+                </td>
             </tr>
             <tr ng-repeat-end class="bg-danger">
                 <td>{{ sustitucion.sale_jugadores_matricula }}</td>
@@ -62,7 +63,8 @@
                            min="0" name="cambio-local-minuto" />
 
                 </div>
-                <button id="submit-cambio-local" class="btn btn-primary">Agregar</button>
+                <button ng-click="agregarSustitucion(jugador_entra_local, jugador_sale_local, sustitucion_minuto_local)"
+                        class="btn btn-primary">Agregar</button>
             </div>
 
             <!-- visita -->
@@ -88,63 +90,13 @@
 
                 <div class="form-group">
                     <label for="cambio-visita-minuto">Minuto:</label>
-                    <input class="form-control" type="number" id="cambio-visita-minuto"
+                    <input ng-model="sustitucion_minuto_visita" class="form-control" type="number" id="cambio-visita-minuto"
                            min="0" name="cambio-visita-minuto" />
 
                 </div>
-                <button id="submit-cambio-visita" class="btn btn-primary">Agregar</button>
+                <button ng-click="agregarSustitucion(jugador_entra_visita, jugador_sale_visita, sustitucion_minuto_visita)"
+                        class="btn btn-primary">Agregar</button>
             </div>
         </div>
     </div>
 </div>
-
-<script>
-    enviarSustitucion = function(entra, sale, minuto){
-        showPleaseWait();
-
-        let callBody = {
-            "entra_matricula": entra,
-            "sale_matricula": sale,
-            "minuto": minuto
-        }
-        console.log(callBody);
-        $.ajax({
-                url: '/api/fixtures/<%= partido.partidos_id %>/sustituciones',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(callBody),
-                success: function (response) {
-                    setProgress(100);
-                    hidePleaseWait();
-                },
-                error: function (error) {
-                    setProgress(100);
-                    hidePleaseWait();
-                    //alert("No se pudo conectar con el servidor");
-                }
-            }
-        );
-    }
-
-    $("#submit-cambio-local").click(function(e) {
-        let sale = document.getElementById("local-sale").value.split("-").map(function (item) {
-            return item.trim();
-        })[0];;
-        let entra = document.getElementById("local-entra").value.split("-").map(function (item) {
-            return item.trim();
-        })[0];
-        let minuto = document.getElementById("cambio-local-minuto").value;
-        enviarSustitucion(entra, sale, minuto);
-    });
-
-    $("#submit-cambio-visita").click(function(e) {
-        let sale = document.getElementById("visita-sale").value.split("-").map(function (item) {
-            return item.trim();
-        })[0];;
-        let entra = document.getElementById("visita-entra").value.split("-").map(function (item) {
-            return item.trim();
-        })[0];
-        let minuto = document.getElementById("cambio-visita-minuto").value;
-        enviarSustitucion(entra, sale, minuto);
-    });
-</script>

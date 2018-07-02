@@ -257,15 +257,36 @@ router.delete('/fixtures/:game/tarjetas/:sancion_id', function(req, res){
    });
 });
 
-router.delete('/fixtures/:game/sustituciones', function(req, res){
-    log.debug("borrando sustitucion", req.body.sustituciones_id, "en", req.params.game);
-    db.removeSubstitution(req.params.game, req.body.sustituciones_id, function(err, result){
+router.delete('/fixtures/:game/sustituciones/:sustitucion_id', function(req, res){
+    log.debug("borrando sustitucion", req.params.sustitucion_id, "en", req.params.game);
+    db.removeSubstitution(req.params.game, req.params.sustitucion_id, function(err, result){
         if(err) {
             log.debug(err);
             res.sendStatus(500);
         }
         else{
             res.sendStatus(200);
+        }
+    });
+});
+
+router.post('/fixtures/:game/sustituciones', function (req, res) {
+    log.debug("agregando tarjeta", JSON.stringify(req.body));
+    db.addSubstitution(req.params.game, req.body, function (err, result) {
+        if(err){
+            log.debug(err);
+            res.sendStatus(500);
+        }
+        else{
+            db.getSubstitution(req.params.game, result.insertId, function (err1, result1) {
+                if(err1){
+                    log.debug(err1);
+                    res.sendStatus(500);
+                }
+                else{
+                    res.send(result1);
+                }
+            })
         }
     });
 });
@@ -297,6 +318,18 @@ router.get('/fixtures/:game/goles', function(req, res){
     });
 });
 
+router.get('/fixtures/:game/sustituciones', function(req, res){
+   db.getGameSubs(req.params.game, function (err, result) {
+       if(err){
+           log.debug(err);
+           res.sendStatus(500);
+       }
+       else{
+           res.send(result);
+       }
+   }) ;
+});
+
 router.get('/equipos/:equipo/partidos/:partido/jugadores', function (req, res) {
     db.getTeamPlayersInGame(req.params.equipo, req.params.partido, function (err, result) {
         if(err){
@@ -321,12 +354,5 @@ router.post('/equipos/:equipo/partidos/:partido/jugadores', function (req, res) 
 });
 
 
-router.post('/fixtures/:game/sustituciones', function (req, res) {
-    log.debug("agregando sustitucion", JSON.stringify(req.body));
-    db.addSubstitution(req.params.game, req.body, function (err, result) {
-        log.debug(err);
-        res.sendStatus(200);
-    });
-});
 
 module.exports = router;

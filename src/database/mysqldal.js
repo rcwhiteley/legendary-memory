@@ -167,18 +167,22 @@ exports.getCard = function(tarjeta, callback){
 };
 
 exports.addSubstitution = function(partido, sustitucion, callback){
+    log.debug("agregando sustitucion", partido, sustitucion);
     exports.getPlayerInGame(partido, sustitucion.entra_matricula, function(error, result) {
         if(error || result.length <= 0){
+            console.log("aca1");
             callback(error, result);
         }
         else{
             exports.getPlayerInGame(partido, sustitucion.sale_matricula, function(error1, result1) {
                 if(error1 || result1.length <= 0){
+                    console.log("aca2");
                     callback(error1, result1);
                 }
                 else{
                     let entra = result[0].jugador_partido_id;
                     let sale = result1[0].jugador_partido_id;
+                    console.log("insert into sustituciones values (default, ?, ?, ?)", entra, sale, sustitucion.minuto);
                     connection.query("insert into sustituciones values (default, ?, ?, ?)", [entra, sale, sustitucion.minuto], callback);
                 }
             });
@@ -206,3 +210,8 @@ exports.getGoal = function(gol, callback){
 exports.getTeamPlayersInGame = function(equipo, partido, callback){
     connection.query("select * from plantel_partido_view where partidos_id=? and equipos_nombre=?", [partido, equipo], callback);
 };
+
+
+exports.getSubstitution = function(partido, sustitucion, callback){
+    connection.query("select * from sustituciones_view where partidos_id=? and sustituciones_id=?", [partido, sustitucion], callback);
+}
