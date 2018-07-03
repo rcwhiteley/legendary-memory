@@ -366,5 +366,11 @@ app.controller('app-ctrl', function($scope, $http){
                 hidePleaseWait();
             });
     }
+
+    /*
+    * INICIALIZACION
+    */
+    $scope.tipo_tarjeta = "Amarilla";
+    $scope.gol_jugador = "elija jugador";
 });
 

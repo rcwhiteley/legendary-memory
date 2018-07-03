@@ -28,7 +28,7 @@
             <div class="form-group">
                 <label for="gol-jugador">Jugador:</label>
                 <select
-                        ng-options="jugador.jugadores_matricula + ' - ' + jugador.nombre for jugador in plantel_local.concat(plantel_visita) | filter:jugoEnPartido"
+                        ng-options="jugador.jugadores_matricula + ' - ' + jugador.nombre group by jugador.equipos_nombre for jugador in plantel_local.concat(plantel_visita) | filter:jugoEnPartido"
                         ng-model="golJugador" name="gol-jugador" class="form-control" id="gol-jugador">
 
                 </select>

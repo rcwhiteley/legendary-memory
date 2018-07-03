@@ -30,7 +30,7 @@
                 <label for="tarjeta-jugador">Jugador:</label>
                 <select name="tarjeta-jugador" class="form-control"
                         ng-model="jugador_tarjeta"
-                        ng-options="jugador.jugadores_matricula + ' - ' + jugador.nombre for jugador in plantel_local.concat(plantel_visita) | filter:jugoEnPartido"
+                        ng-options="jugador.jugadores_matricula + ' - ' + jugador.nombre group by jugador.equipos_nombre for jugador in plantel_local.concat(plantel_visita) | filter:jugoEnPartido"
                         id="tarjeta-jugador">
                 </select>
             </div>
