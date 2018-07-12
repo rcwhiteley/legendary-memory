@@ -35,7 +35,11 @@
         </row>
     </div>
     <div ng-app="app" ng-controller="app-ctrl">
-
+    <script>
+        const partidos_id = '<%= partido.partidos_id%>';
+        const equipo_local = '<%= partido.local_nombre%>';
+        const equipo_visita = '<%= partido.visita_nombre%>';
+    </script>
     <%include editarpartido/progress.ejs%>
 
     <%include editarpartido/plantel_local.ejs%>

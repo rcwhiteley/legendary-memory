@@ -1,15 +1,31 @@
 app.controller('app-ctrl', function($scope, $http){
+    /*  INICIALIZACION   */
+
+    $scope.partidos_id = partidos_id;
+    $scope.equipo_local = equipo_local;
+    $scope.equipo_visita = equipo_visita;
+
+    $scope.crearRuta = function(){
+        let suffix = Array.prototype.slice.call(arguments).join("/")
+        let prefix = "/api/fixtures/" + $scope.partidos_id;
+        if(suffix.length > 0){
+            prefix = prefix + "/" + suffix;
+        }
+        return prefix;
+    }
     /*  GOLES */
 
     console.log("pero que mierda la wea");
     $scope.goles = [];
-    $http.get("/api/fixtures/<%=partido.partidos_id%>/goles")
+    console.log($scope.crearRuta("goles"));
+    $http.get($scope.crearRuta("goles"))
         .then(function(response) {
             $scope.goles = response.data;
         });
     $scope.removerGol = function(gol_id){
         showPleaseWait();
-        $http.delete("/api/fixtures/<%=partido.partidos_id%>/goles/" + gol_id)
+        console.log(gol_id);
+        $http.delete($scope.crearRuta("goles", gol_id))
             .then(function (response) {
                 let index = -1;
                 for(let i = 0; i < $scope.goles.length; i++){
@@ -36,7 +52,7 @@ app.controller('app-ctrl', function($scope, $http){
             setProgress(100);
             hidePleaseWait();
         });
-    }
+    };
     $scope.agregarGol = function(){
         showPleaseWait();
 
@@ -45,7 +61,7 @@ app.controller('app-ctrl', function($scope, $http){
                 jugadores_matricula:$scope.golJugador.jugadores_matricula,
                 minuto: $scope.minutoGol
             };
-        let url = '/api/fixtures/<%=partido.partidos_id%>/goles';
+        let url = $scope.crearRuta("goles");
         $http.post(url, data)
             .then(function(response){
                     console.log(JSON.stringify(response));
@@ -67,10 +83,10 @@ app.controller('app-ctrl', function($scope, $http){
 
     /* PLANTEL LOCAL */
 
-    $scope.equipo_local = '<%=partido.local_nombre%>';
-    $scope.partido_id = <%=partido.partidos_id%>;
+    //$scope.equipo_local = '<%=partido.local_nombre%>';
+    //$scope.partidos_id= <%=partido.partidos_id%>;
     $scope.plantel_local = [];
-    $scope.ruta_plantel_local = '/api/equipos/' + $scope.equipo_local + '/partidos/' + $scope.partido_id + '/jugadores'
+    $scope.ruta_plantel_local = '/api/equipos/' + $scope.equipo_local + '/partidos/' + $scope.partidos_id+ '/jugadores';
     $scope.obtenerJugadoresLocal = function(){
         $http.get($scope.ruta_plantel_local)
             .then(function(response){
@@ -158,9 +174,9 @@ app.controller('app-ctrl', function($scope, $http){
 
     /* PLANTEL VISITA */
 
-    $scope.equipo_visita = '<%=partido.visita_nombre%>';
+    //$scope.equipo_visita = '<%=partido.visita_nombre%>';
     $scope.plantel_visita = [];
-    $scope.ruta_plantel_visita = '/api/equipos/' + $scope.equipo_visita + '/partidos/' + $scope.partido_id + '/jugadores'
+    $scope.ruta_plantel_visita = '/api/equipos/' + $scope.equipo_visita + '/partidos/' + $scope.partidos_id+ '/jugadores'
     $scope.obtenerJugadoresVisita = function(){
         $http.get($scope.ruta_plantel_visita)
             .then(function(response){
@@ -246,7 +262,7 @@ app.controller('app-ctrl', function($scope, $http){
     }
 
     /* TARJETAS */
-    $http.get('/api/fixtures/' + $scope.partido_id + '/tarjetas')
+    $http.get($scope.crearRuta("tarjetas"))
         .then(function(response){
             $scope.tarjetas=response.data;
             console.log(response.data);
@@ -256,7 +272,7 @@ app.controller('app-ctrl', function($scope, $http){
     $scope.removerTarjeta = function(sanciones_id)
     {
         showPleaseWait();
-        $http.delete("/api/fixtures/" + $scope.partido_id + "/tarjetas/" + sanciones_id)
+        $http.delete($scope.crearRuta("tarjetas", sanciones_id))
             .then(function (response) {
                 if (response.data.toLowerCase() === "ok") {
                     let index = -1;
@@ -290,7 +306,7 @@ app.controller('app-ctrl', function($scope, $http){
             "duracion": $scope.duracion_tarjeta
         }
         setProgress(30);
-        $http.post('/api/fixtures/' + $scope.partido_id + '/tarjetas', callBody)
+        $http.post($scope.crearRuta("tarjetas"), callBody)
             .then(function(response){
                 console.log("lesto");
                 if(response.data){
@@ -311,7 +327,7 @@ app.controller('app-ctrl', function($scope, $http){
 
 
     /* SUSTITUCIONES */
-    $http.get('/api/fixtures/' + $scope.partido_id + '/sustituciones')
+    $http.get($scope.crearRuta("sustituciones"))
         .then(function(response){
             $scope.sustituciones=response.data;
         }, function(error){
@@ -321,7 +337,7 @@ app.controller('app-ctrl', function($scope, $http){
         showPleaseWait();
         console.log("borrar ", sustitucion_id);
         setProgress(30);
-        $http.delete('/api/fixtures/' + $scope.partido_id + '/sustituciones/' + sustitucion_id)
+        $http.delete('/api/fixtures/' + $scope.partidos_id+ '/sustituciones/' + sustitucion_id)
             .then(function(response){
                 console.log(response.data)
                 let index = -1;
@@ -352,7 +368,7 @@ app.controller('app-ctrl', function($scope, $http){
         console.log("enviando:");
         console.log(callBody);
         setProgress(30);
-        $http.post('/api/fixtures/' + $scope.partido_id + '/sustituciones', callBody)
+        $http.post('/api/fixtures/' + $scope.partidos_id+ '/sustituciones', callBody)
             .then(function (response) {
                 console.log(response.data);
                 if(response.data.length > 0){
