@@ -20,21 +20,21 @@
 
 <%include headmenu.html%>
 <div class="container">
-    <div class="col-md-6 mt-4 text-center">
+    <div class="text-center">
         <h1>
             <%= partido.local_nombre %> vs <%= partido.visita_nombre%>
         </h1>
     </div>
-    <div class="col-md-12 mt-4 text-center">
-        <row>
-            <button type="button" class="btn btn-info col-sm-2" data-toggle="collapse" data-target="#local"><%=partido.local_nombre%></button>
-            <button type="button" class="btn btn-info col-sm-2" data-toggle="collapse" data-target="#visita"><%=partido.visita_nombre%></button>
-            <button type="button" class="btn btn-info col-sm-2" data-toggle="collapse" data-target="#tarjetas">Tarjetas</button>
-            <button type="button" class="btn btn-info col-sm-2" data-toggle="collapse" data-target="#goles">Goles</button>
-            <button type="button" class="btn btn-info col-sm-2" data-toggle="collapse" data-target="#sustituciones">Sustituciones</button>
-        </row>
-    </div>
-    <div ng-app="app" ng-controller="app-ctrl">
+    <!--<div class="col-md-12 mt-4 text-center">-->
+        <div class="nav nav-tabs" id="nav-maintabs" role="tablist">
+            <a class="nav-item nav-link active" id="local-tab" data-toggle="tab" href="#local" role="tab" aria-controls="local" aria-selected="true"><%=partido.local_nombre%></a>
+            <a class="nav-item nav-link" id="visita-tab" data-toggle="tab" href="#visita" role="tab" aria-controls="visita" aria-selected="false"><%=partido.visita_nombre%></a>
+            <a class="nav-item nav-link" id="tarjetas-tab" data-toggle="tab" href="#tarjetas" role="tab" aria-controls="tarjetas" aria-selected="false">Tarjetas</a>
+            <a class="nav-item nav-link" id="goles-tab" data-toggle="tab" href="#goles" role="tab" aria-controls="goles" aria-selected="false">Goles</a>
+            <a class="nav-item nav-link" id="sustituciones-tab" data-toggle="tab" href="#sustituciones" role="tab" aria-controls="sustituciones" aria-selected="false">Sustituciones</a>
+        </div>
+    <!--</div>-->
+    <div class="tab-content" id="nav-maintabsContent" ng-app="app" ng-controller="app-ctrl">
     <script>
         const partidos_id = '<%= partido.partidos_id%>';
         const equipo_local = '<%= partido.local_nombre%>';
