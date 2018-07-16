@@ -12,7 +12,7 @@ app.controller('app-ctrl', function($scope, $http){
             prefix = prefix + "/" + suffix;
         }
         return prefix;
-    }
+    };
     /*  GOLES */
 
     console.log("pero que mierda la wea");
@@ -75,10 +75,10 @@ app.controller('app-ctrl', function($scope, $http){
                 hidePleaseWait();
             });
         console.log("agregando", $scope.minutoGol, $scope.golJugador);
-    }
+    };
     $scope.jugoEnPartido = function(jugador){
         return jugador.titularidad === 1 || jugador.titularidad === 2;
-    }
+    };
 
 
     /* PLANTEL LOCAL */
@@ -106,7 +106,7 @@ app.controller('app-ctrl', function($scope, $http){
             console.log("removiendo");
             array.splice(index, 1);
         }
-    }
+    };
     $scope.esTitularLocal = function(jugador) {
         return jugador.titularidad === 1;
     };
@@ -140,12 +140,12 @@ app.controller('app-ctrl', function($scope, $http){
         let elegidos = $scope.plantel_elegidos_local.slice();
         $scope.plantel_elegidos_local = [];
         $scope.cambiarTitularidad($scope.plantel_local, elegidos, 1);
-    }
+    };
     $scope.mover_a_suplentes_local = function(){
         let elegidos = $scope.plantel_elegidos_local.slice();
         $scope.plantel_elegidos_local = [];
         $scope.cambiarTitularidad($scope.plantel_local, elegidos, 2);
-    }
+    };
     $scope.obtenerJugadoresLocal();
     $scope.guardar_local = function(){
         showPleaseWait();
@@ -169,7 +169,7 @@ app.controller('app-ctrl', function($scope, $http){
                     hidePleaseWait();
                 });
         }
-    }
+    };
 
 
     /* PLANTEL VISITA */
@@ -196,7 +196,7 @@ app.controller('app-ctrl', function($scope, $http){
             console.log("removiendo");
             array.splice(index, 1);
         }
-    }
+    };
     $scope.esTitularVisita = function(jugador) {
         return jugador.titularidad === 1;
     };
@@ -215,7 +215,7 @@ app.controller('app-ctrl', function($scope, $http){
                 }
             }
         }
-    }
+    };
     $scope.mover_titular_a_plantel_visita = function(){
         let elegidos = $scope.titulares_elegidos_visita.slice();
         $scope.titulares_elegidos_visita = [];
@@ -230,12 +230,12 @@ app.controller('app-ctrl', function($scope, $http){
         let elegidos = $scope.plantel_elegidos_visita.slice();
         $scope.plantel_elegidos_visita = [];
         $scope.cambiarTitularidad($scope.plantel_visita, elegidos, 1);
-    }
+    };
     $scope.mover_a_suplentes_visita = function(){
         let elegidos = $scope.plantel_elegidos_visita.slice();
         $scope.plantel_elegidos_visita = [];
         $scope.cambiarTitularidad($scope.plantel_visita, elegidos, 2);
-    }
+    };
     $scope.obtenerJugadoresVisita();
     $scope.guardar_visita = function(){
         showPleaseWait();
@@ -245,7 +245,7 @@ app.controller('app-ctrl', function($scope, $http){
                 "jugadores_matricula": $scope.plantel_visita[i].jugadores_matricula,
                 "nombre": $scope.plantel_visita[i].nombre,
                 "titularidad": $scope.plantel_visita[i].titularidad
-            }
+            };
             $http.post($scope.ruta_plantel_visita, callBody)
                 .then(function(response){
                         setProgress(100 * i / $scope.plantel_visita.length);
@@ -259,7 +259,7 @@ app.controller('app-ctrl', function($scope, $http){
                     hidePleaseWait();
                 });
         }
-    }
+    };
 
     /* TARJETAS */
     $http.get($scope.crearRuta("tarjetas"))
@@ -294,7 +294,7 @@ app.controller('app-ctrl', function($scope, $http){
             setProgress(100);
             hidePleaseWait();
         });
-    }
+    };
     $scope.agregarTarjeta = function () {
         showPleaseWait();
         console.log($scope.jugador_tarjeta);
@@ -304,7 +304,7 @@ app.controller('app-ctrl', function($scope, $http){
             "minuto": $scope.minuto_tarjeta,
             "tipo": $scope.tipo_tarjeta === "Amarilla" ? 1 : 2,
             "duracion": $scope.duracion_tarjeta
-        }
+        };
         setProgress(30);
         $http.post($scope.crearRuta("tarjetas"), callBody)
             .then(function(response){
@@ -323,7 +323,7 @@ app.controller('app-ctrl', function($scope, $http){
                 setProgress(100);
                 hidePleaseWait();
             });
-    }
+    };
 
 
     /* SUSTITUCIONES */
@@ -364,7 +364,7 @@ app.controller('app-ctrl', function($scope, $http){
             "entra_matricula": entra.jugadores_matricula,
             "sale_matricula": sale.jugadores_matricula,
             "minuto": minuto
-        }
+        };
         console.log("enviando:");
         console.log(callBody);
         setProgress(30);
@@ -381,7 +381,7 @@ app.controller('app-ctrl', function($scope, $http){
                 setProgress(100);
                 hidePleaseWait();
             });
-    }
+    };
 
     /*
     * INICIALIZACION
